@@ -4,6 +4,25 @@ import { motion } from 'framer-motion'
 import { db } from '../firebase'
 import { doc, getDoc } from 'firebase/firestore'
 import { ArrowLeft, Wifi, Zap, Building, Square, Bed, Bath, Share2, Heart, Shield, Loader2 } from 'lucide-react'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
+
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
+const goldPin = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-gold.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 const PropertyDetail = () => {
     const { id } = useParams();
@@ -32,7 +51,7 @@ const PropertyDetail = () => {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-midnight text-white">
                 <Loader2 className="w-12 h-12 border-slate text-slate animate-spin mb-6" />
-                <p className="text-[10px] uppercase font-black tracking-[0.5em] text-slate">Synchronizing Protocol...</p>
+                <p className="text-[10px] uppercase font-black tracking-[0.5em] text-slate">Loading...</p>
             </div>
         );
     }
@@ -52,7 +71,7 @@ const PropertyDetail = () => {
         
         {/* Left Column - Dynamic Gallery (Parallax Ready) */}
         <div className="w-full lg:w-[60%] flex flex-col pt-[100px] bg-obsidian">
-          {(property.imageUrls || ['/origin.jpeg']).map((img, idx) => (
+          {(property.imageUrls && property.imageUrls.length > 0 ? property.imageUrls : ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&q=80&w=2000']).map((img, idx) => (
             <div key={idx} className="w-full h-[70vh] lg:h-screen relative overflow-hidden mb-4 lg:mb-0 grayscale brightness-50 hover:grayscale-0 transition-all duration-1000">
                 <img 
                     src={img} 
@@ -80,29 +99,25 @@ const PropertyDetail = () => {
               transition={{ duration: 1 }}
             >
               <div className="mb-12">
-                <span className="text-slate font-bold uppercase tracking-[0.5em] text-[10px] mb-6 block font-inter">Institutional Asset Record</span>
-                <h1 className="text-6xl md:text-8xl font-medium font-headings tracking-[0.02em] leading-tight mb-4 text-white italic">
-                  {property.title}
+                <h1 className="text-2xl md:text-4xl font-medium font-headings tracking-[0.02em] leading-tight mb-6 text-white italic">
+                  {property.location || 'London, UK'}
                 </h1>
-                <p className="text-[12px] font-bold uppercase tracking-[0.4em] text-white/30 font-inter">
-                  {property.location}
-                </p>
+                <div className="flex flex-wrap items-center gap-6 text-[12px] font-bold uppercase tracking-[0.4em] text-white/50 font-inter">
+                  <span>{property.beds || 0} Beds</span>
+                  <span>•</span>
+                  <span>{property.baths || 0} Baths</span>
+                  <span>•</span>
+                  <span>{property.propertyType || 'Property'}</span>
+                </div>
               </div>
 
-              <div className="text-4xl font-medium font-headings tracking-[0.02em] mb-16 pb-12 border-b border-slate/10 text-white flex items-baseline gap-4">
+              <div className="text-4xl font-medium font-headings tracking-[0.02em] mb-12 pb-12 border-b border-slate/10 text-white flex items-baseline gap-4">
                 £{property.isForSale ? property.salePrice : property.monthlyRent}
                 {!property.isForSale && <span className="text-[10px] font-bold uppercase tracking-[0.4em] opacity-30 font-inter">/ PCM</span>}
               </div>
 
-              <div className="space-y-20">
-                <div>
-                  <h4 className="text-[10px] font-bold uppercase tracking-[0.5em] text-slate/30 mb-8 font-inter">Technical Description</h4>
-                  <p className="text-white/60 text-xl leading-relaxed font-headings italic">
-                    {property.description}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-y-16 gap-x-12 border-y border-slate/10 py-16">
+              <div className="space-y-12">
+                <div className="grid grid-cols-2 gap-y-12 gap-x-8 border-t border-slate/10 pt-12">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 glass-machined flex items-center justify-center text-slate"><Bed size={20}/></div>
                     <div>
@@ -133,11 +148,44 @@ const PropertyDetail = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-8">
-                  <button className="institutional-btn w-full">
-                    Request technical protocol
-                  </button>
-                  <p className="text-[9px] text-center text-white/20 font-bold uppercase tracking-[0.4em] font-inter">Subject to institutional vetting procedures</p>
+                <div className="flex flex-col gap-6">
+                  <Link to="/contact" className="w-full text-center py-5 bg-[#DAA520] hover:bg-white text-midnight hover:text-midnight font-bold uppercase tracking-[0.3em] transition-colors">
+                    Contact Us
+                  </Link>
+                </div>
+
+                {/* GIS View */}
+                <div className="pt-12 border-t border-slate/10">
+                  <h4 className="text-[10px] font-bold uppercase tracking-[0.5em] text-slate/50 mb-6 font-inter">Location</h4>
+                  <div className="h-[300px] w-full border border-slate/10 overflow-hidden">
+                    {property.lat && property.lng ? (
+                      <MapContainer
+                        center={[property.lat, property.lng]}
+                        zoom={15}
+                        style={{ height: '100%', width: '100%' }}
+                        scrollWheelZoom={false}
+                      >
+                        <TileLayer
+                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        />
+                        <Marker position={[property.lat, property.lng]} icon={goldPin}>
+                          <Popup>{property.title || property.location || 'Property'}</Popup>
+                        </Marker>
+                      </MapContainer>
+                    ) : (
+                      <iframe
+                        src={`https://maps.google.com/maps?q=${encodeURIComponent(property.location || 'London, UK')}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        allowFullScreen=""
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        title="Property Location"
+                      ></iframe>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>

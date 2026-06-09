@@ -1,85 +1,55 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import ProcessSteps from '../components/ProcessSteps';
-import Contact from '../components/Contact';
-import { complianceFaqs } from '../data/faqData';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Key, Shield, Award, MapPin, ClipboardCheck, ArrowRight } from 'lucide-react';
 
 const LettingGuidePage = () => {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+  const steps = [
+    { title: "Preparing Your Property", desc: "Neutral decor, professional deep clean, and clear furnishings. First impressions are critical for attracting high-quality tenants." },
+    { title: "Meeting Compliance Requirements", desc: "Annual Gas Safety check, EICR (every 5 years), EPC rating minimum E (minimum C for new tenancies), and checking if your borough requires a selective/HMO licence." },
+    { title: "Setting the Rent", desc: "Evaluate comparable properties in your specific borough. Alternatively, opt for our Guaranteed Rent Scheme for fixed income certainty." },
+    { title: "Tenant Sourcing & Viewings", desc: "Marketing on major portals, qualifying applicants before viewings, and accompanied professional viewings." },
+    { title: "Referencing & AST", desc: "Credit checks, employment referencing, previous landlord checks, Right-to-Rent document verification, and drafting a legally compliant tenancy agreement." },
+    { title: "Move-In & Inventory", desc: "A comprehensive photographic inventory, meter readings, key handover, and registering the deposit with an approved deposit protection scheme." },
+    { title: "Ongoing Management", desc: "Rent collection, 24/7 maintenance support, mid-tenancy inspections, and managing annual safety certificate renewals." }
+  ];
 
-    const lettingSteps = [
-        { 
-            title: "01. Preparation Protocol", 
-            desc: "Verify mortgage/lease terms and institutional licensing requirements (Mandatory HMO vs Selective Licensing)." 
-        },
-        { 
-            title: "02. Legal Integrity", 
-            desc: "Secure Gas Safety (CP12), EICR (5-year), and EPC certificates (Minimum Rating E). Ensure compliant fire/CO alarm counts." 
-        },
-        { 
-            title: "03. Strategic Marketing", 
-            desc: "Establish resident profiles, perform 'Right to Rent' audits, and conduct rigorous professional vetting and referencing." 
-        },
-        { 
-            title: "04. Institutional Documentation", 
-            desc: "Draft compliant Assured Shorthold Tenancies (AST). Provide the 'How to Rent' guide and legal prescribed info." 
-        },
-        { 
-            title: "05. Financial Stewardship", 
-            desc: "Register deposits in government-approved schemes (TDS/DPS) within 30 days. Manage rent review protocols." 
-        },
-        { 
-            title: "06. Operational Stewardship", 
-            desc: "Maintain asset structural integrity, handle reactive repairs, and conduct periodic compliance inspections." 
-        },
-        { 
-            title: "07. Termination Sequence", 
-            desc: "Manage Section 21/Section 8 notices, execute check-out inspections, and handle deposit reconciliations." 
-        }
-    ];
+  return (
+    <div className="bg-bone text-navy min-h-screen pt-[120px] pb-24 selection:bg-navy selection:text-bone">
+      <div className="max-w-[900px] mx-auto px-6 md:px-12">
+        <span className="text-[#DAA520] font-automobile text-[10px] uppercase tracking-[0.4em] block mb-4">Landlord Guide</span>
+        <h1 className="text-4xl md:text-5xl font-headings italic mb-8">Landlord's Guide to Letting in London</h1>
+        
+        <p className="text-navy/70 leading-relaxed text-lg max-w-3xl mb-12">
+          A step-by-step walkthrough of the letting process - from preparing the property for marketing and complying with London licensing rules, through to tenant sourcing, move-in, and tenancy management.
+        </p>
 
-    return (
-        <div className="min-h-screen bg-white text-dark pt-[80px]">
-            {/* Technical Hero */}
-            <section className="px-6 md:px-10 py-24 bg-dark text-white text-center">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1 }}
-                >
-                    <span className="text-[10px] uppercase tracking-[0.6em] text-white/40 block mb-6">Expert Advisor</span>
-                    <h1 className="text-5xl md:text-8xl font-[Outfit] font-extrabold uppercase tracking-tighter leading-[0.9] mb-8">
-                        The London <br /> <span className="text-[#DAA520]">Letting Guide</span>
-                    </h1>
-                    <p className="max-w-3xl mx-auto text-white/60 text-sm md:text-base leading-relaxed font-sans px-4">
-                        Your essential step-by-step framework for compliant asset management in London. From legal preparation to final tenancy reconciliation.
-                    </p>
-                </motion.div>
-            </section>
-
-            {/* Steps Sequence */}
-            <div className="bg-white py-12">
-                <ProcessSteps 
-                    title="The Professional Pathway" 
-                    steps={lettingSteps} 
-                />
+        <div className="space-y-8 mb-16">
+          {steps.map((st, idx) => (
+            <div key={idx} className="border-l-2 border-[#DAA520] pl-6 md:pl-10 py-2 space-y-2">
+              <span className="text-[#DAA520] font-automobile text-[10px] uppercase tracking-[0.3em] font-bold block">Step 0{idx + 1}</span>
+              <h3 className="font-headings italic text-2xl font-bold">{st.title}</h3>
+              <p className="text-xs text-navy/70 leading-relaxed font-automobile uppercase tracking-wider">{st.desc}</p>
             </div>
-
-            {/* Note on Responsibility */}
-            <section className="py-24 px-6 md:px-10 bg-[#FAF9F6] border-t border-dark/5">
-                <div className="max-w-4xl mx-auto text-center">
-                    <h3 className="text-xs font-bold uppercase tracking-[.4em] text-dark/30 mb-8">Asset Protection Note</h3>
-                    <p className="text-dark/60 text-base leading-relaxed italic font-serif">
-                        Navigating the regulatory landscape of London lettings requires precision. Faith and Co manages 100% of these steps for our partnered landlords, ensuring total compliance and asset protection from day one.
-                    </p>
-                </div>
-            </section>
-
-            <Contact faqs={complianceFaqs} />
+          ))}
         </div>
-    );
+
+        <div className="bg-[#111827] text-bone p-12 text-center space-y-6">
+          <h2 className="text-2xl md:text-3xl font-headings italic">Want a professional team to manage this?</h2>
+          <p className="text-[10px] font-automobile uppercase tracking-widest text-bone/60 max-w-xl mx-auto">
+            From tenant sourcing to full management, we handle every stage of the letting guide for you.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+            <Link to="/contact" className="bg-[#DAA520] hover:bg-[#B8860B] text-navy font-bold text-[10px] tracking-[0.25em] uppercase px-8 py-4">
+              Speak to Lettings Team
+            </Link>
+            <Link to="/landlords/free-valuation" className="border border-white/20 hover:border-white text-bone font-bold text-[10px] tracking-[0.25em] uppercase px-8 py-4">
+              Get Valuation
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default LettingGuidePage;

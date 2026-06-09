@@ -1,129 +1,155 @@
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Home, Users, Heart, Briefcase, Activity, Landmark, Scale, Building2, UserPlus, FileCheck, ChevronDown, Plus, Minus, Database } from 'lucide-react';
-
-const careCategories = [
-    { 
-        title: "Supported Living",
-        desc: "Supported living enables individuals with learning disabilities, mental health needs, or physical disabilities to live in their own homes rather than residential care. Our infrastructure provides a baseline of safety while allowing for 24/7 on-site support staff. This model focuses on person-centred outcomes, ensuring that every resident has a tenancy agreement and control over their environment, fostering long-term independence and community integration."
-    },
-    { 
-        title: "Children's Residential Homes",
-        desc: "Specialized residential facilities designed to provide a nurturing, safe, and structured environment for children and young people who cannot live with their birth families. These homes are strictly registered with Ofsted and must meet rigorous Quality Standards. Our properties are selected for their proximity to schools and community services, featuring high-spec communal areas and private bedrooms that offer a sense of stability and domestic warmth."
-    },
-    { 
-        title: "Semi-Independent Living (16-17)",
-        desc: "A transitional housing model for 16 and 17-year-olds who are looked after by the local authority or are care leavers. These facilities provide an essential bridge between institutional care and full independence. Support is tailored to help young people develop life skills such as budgeting, cooking, and career planning, all within a supervised setting that ensures safeguarding protocols are maintained around the clock."
-    },
-    { 
-        title: "Supported Accommodation (Care Leavers 16-25)",
-        desc: "Targeted housing for care leavers aged 16 to 25, facilitating a gradual transition into adult life. This sector addresses the specific challenges faced by young people leaving the care system, providing stable tenancies combined with floating or on-site support. The goal is to prevent homelessness and social isolation during this vulnerable transition period, providing a solid foundation for further education and employment."
-    },
-    { 
-        title: "Step-Down & Discharge-to-Assess Housing",
-        desc: "Interim housing solutions for individuals who no longer require acute hospital care but are not yet ready to return to their permanent homes. This 'Step-Down' model is critical for reducing hospital bed blocking and ensuring patient flow within the NHS. Our properties are equipped to facilitate assessments by social workers and therapists, providing a safe environment for recuperation and re-ablement before a final move."
-    },
-    { 
-        title: "Drug & Alcohol Recovery Housing",
-        desc: "Specialist accommodation for individuals who have completed primary detox but require a stable, substance-free environment to maintain their recovery. These 'dry' houses provide a peer-supported community that is essential for relapse prevention. The infrastructure supports a culture of sobriety, helping residents re-establish healthy routines and prepare for long-term reintegration into the workforce and community."
-    },
-    { 
-        title: "Domestic Abuse Refuge & Move-On Housing",
-        desc: "Crucial safe havens for individuals and families fleeing domestic abuse. We provide high-security refuge accommodation followed by 'Move-On' housing that offers a path toward permanent rehousing. These facilities are designed with heightened privacy and security features, providing a calm and restorative environment where survivors can access trauma-informed support and begin rebuilding their lives in safety."
-    },
-    { 
-        title: "Older People's Housing with Extra Care",
-        desc: "A modern alternative to traditional residential care, Extra Care housing allows older people to live in their own self-contained apartments with the security of 24-hour care available on-site if needed. Our developments feature communal social spaces, accessible architecture, and smart technology, promoting both social inclusion and physical safety while preserving individual privacy and dignity."
-    },
-    { 
-        title: "Forensic Supported Housing",
-        desc: "Specialized housing for individuals with mental health issues who have entered the criminal justice system. This high-support environment provides a pathway from secure hospital units back into the community. Our forensic infrastructure is designed for robust risk management and clinical supervision, focusing on reducing re-offending and ensuring patient stability through structured rehabilitation programs."
-    },
-    { 
-        title: "Forensic Community Accommodation (MAPPA/CAS3)",
-        desc: "Highly managed housing for individuals under Multi-Agency Public Protection Arrangements (MAPPA) or the Commissioning of Accommodation and Support (CAS3) framework. These facilities provide the necessary oversight and structure to manage risk in the community effectively. The focus is on stringent compliance with license conditions while providing a stable base to prevent homelessness among high-risk individuals."
-    },
-    { 
-        title: "Exempt Accommodation",
-        desc: "A specific type of supported housing where the provider is 'exempt' from the standard Local Housing Allowance caps due to the level of care and support provided. This model is vital for housing some of the most vulnerable groups in society, ensuring that high-intensity support costs are met through specialized funding streams, enabling the provision of intensive housing management and personalized care."
-    }
-];
-
-const GlassAccordion = ({ cat, index }) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    // Map different icons based on index
-    const IconComponents = [Home, Users, Heart, Briefcase, Activity, Shield, Landmark, Scale, Building2, UserPlus, Database];
-    const Icon = IconComponents[index % IconComponents.length];
-
-    return (
-        <div className="w-full">
-            <button 
-                onClick={() => setIsOpen(!isOpen)}
-                className={`w-full p-10 flex items-center justify-between border-b border-navy/5 transition-all duration-700 ${index % 2 === 0 ? 'bg-bone' : 'bg-navy/[0.02]'} ${isOpen ? 'bg-navy !text-bone' : 'hover:bg-navy/[0.05]'}`}
-            >
-                <div className="flex items-center gap-10">
-                    <span className="text-[12px] font-automobile opacity-20">{String(index + 1).padStart(2, '0')}</span>
-                    <Icon size={24} className={`transition-colors ${isOpen ? 'text-bone' : 'text-navy'}`} strokeWidth={1} />
-                    <h2 className={`text-2xl md:text-3xl font-automobile transition-colors ${isOpen ? 'text-bone' : 'text-navy'}`}>{cat.title}</h2>
-                </div>
-                <div className={`w-10 h-10 flex items-center justify-center border transition-all duration-500 ${isOpen ? 'rotate-180 border-bone text-bone' : 'border-navy/20 text-navy'}`}>
-                    <ChevronDown size={20} />
-                </div>
-            </button>
-
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
-                        className="overflow-hidden bg-navy/[0.03] backdrop-blur-xl"
-                    >
-                        <div className="p-16">
-                            <div className="max-w-4xl">
-                                <h4 className="text-[10px] font-automobile uppercase tracking-[0.4em] text-navy/40 mb-8">Classification Insight</h4>
-                                <p className="text-xl md:text-2xl font-headings text-navy italic leading-relaxed">
-                                    {cat.desc}
-                                </p>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-    );
-}
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Heart, ShieldCheck, Home, Users, Building, AlertCircle, Award, CheckCircle2 } from 'lucide-react';
 
 const CareSectorPage = () => {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+  const sectors = [
+    {
+      title: "Children's Residential Homes",
+      badge: "C2 Licence Required",
+      desc: "Ofsted-regulated under Children's Homes Regulations 2015. Provider must be Ofsted-registered before operating. Property: 4–6 bed residential house, homely not institutional, garden preferred. Faith & Co holds C2 licences - directly relevant.",
+      icon: <Home className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Semi-Independent Living (16–17)",
+      badge: "Ofsted Supervised",
+      desc: "Ofsted registration required from October 2023 under Supported Accommodation Regulations. Shared house or self-contained flat. Lockable bedrooms. Shared only with other care leavers. High demand across London boroughs.",
+      icon: <Users className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Supported Accommodation (Care Leavers 16–25)",
+      badge: "Local Authority Funded",
+      desc: "Ofsted-registered provider required. Local authority funds placements. Self-contained units or shared homes for care leavers only. Very high demand - long-term contractual.",
+      icon: <Heart className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Supported Living - Learning Disabilities",
+      badge: "CQC Regulated Support",
+      desc: "CQC for support provider only. Housing landlord unregulated. Self-contained or shared homes, 2–4 residents. Core Faith & Co market.",
+      icon: <CheckCircle2 className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Supported Living - Mental Health",
+      badge: "NHS & Council Commissioned",
+      desc: "CQC for support provider. Self-contained 1-beds preferred; shared 2–4 bed widely used. NHS ICB and local authority commissioning. Large, consistent-demand sector.",
+      icon: <Building className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Supported Living - Autism",
+      badge: "High Support Sensory Friendly",
+      desc: "CQC for support provider. Self-contained units strongly preferred. Sensory-friendly features an advantage. Fast-growing category.",
+      icon: <AlertCircle className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Drug & Alcohol Recovery (Exempt)",
+      badge: "Exempt Accommodation",
+      desc: "No CQC needed if housing-only. Shared HMO 4–8 beds. Communal lounge and kitchen essential. Housing Benefit at exempt rate (above LHA). Direct fit for Faith & Co HMO portfolio.",
+      icon: <ShieldCheck className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Domestic Abuse Refuge & Move-On",
+      badge: "Confidential Safe Haven",
+      desc: "DAHA-accredited providers. Domestic Abuse Act 2021 safe accommodation duty applies. Self-contained 1–3 bed. Confidential address required.",
+      icon: <ShieldCheck className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Forensic Community Accommodation",
+      badge: "MAPPA / CAS3 Approved",
+      desc: "Ministry of Justice / HMPPS commissioned via an approved CAS3 provider. Self-contained, standard residential street.",
+      icon: <Award className="text-[#DAA520]" size={24} />
+    }
+  ];
 
-    return (
-        <div className="min-h-screen bg-bone pt-[100px] selection:bg-navy selection:text-white pb-40 overflow-hidden">
-            <header className="px-6 md:px-12 py-32 border-b border-navy/5">
-                <div className="max-w-[1400px] mx-auto">
-                    <span className="text-navy/40 font-automobile uppercase tracking-[0.6em] text-[10px] mb-6 block">Facility Ledger</span>
-                    <h1 className="text-6xl md:text-8xl font-headings text-navy leading-none">
-                        Care Sector <br/> <span className="italic opacity-40">Classifications</span>
-                    </h1>
-                </div>
-            </header>
-
-            <section className="px-6 md:px-12 py-12">
-                <div className="max-w-[1400px] mx-auto border-t border-navy/5">
-                    {careCategories.map((cat, idx) => (
-                        <div key={idx}>
-                             <GlassAccordion cat={cat} index={idx} />
-                        </div>
-                    ))}
-                </div>
-            </section>
-
+  return (
+    <div className="bg-bone text-navy min-h-screen pt-[120px] pb-24 selection:bg-navy selection:text-bone">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+        
+        {/* Header Hero */}
+        <div className="space-y-6 mb-16 text-center max-w-[1000px] mx-auto">
+          <span className="text-[#DAA520] font-automobile text-[10px] uppercase tracking-[0.4em] block">
+            Specialist Placement Solutions - Greater London & the Home Counties
+          </span>
+          <h1 className="text-4xl md:text-6xl font-headings italic leading-tight">
+            Specialist Property Solutions for Care Sector Organisations Across London
+          </h1>
+          <p className="text-navy/70 leading-relaxed text-lg max-w-3xl mx-auto">
+            Faith & Co has a dedicated specialism in sourcing and managing properties for care-sector organisations across Greater London. Our C2-licensed portfolio, compliance infrastructure, and understanding of the regulatory landscape make us a natural partner for operators who need properties meeting the requirements of Ofsted, the CQC, and local authority commissioning teams.
+          </p>
         </div>
-    );
+
+        {/* Real-world high-end photography block */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          <div className="h-[300px] overflow-hidden border border-navy/10 relative">
+            <img 
+              src="/caresector.jpg" 
+              alt="High-end residential supported living facility interior" 
+              className="w-full h-full object-cover mix-blend-luminosity brightness-95" 
+            />
+            <div className="absolute bottom-4 left-6 bg-navy/80 text-bone text-[8px] font-automobile tracking-widest uppercase px-3 py-1.5 border border-white/10">
+              Modern Interior Spec
+            </div>
+          </div>
+          <div className="h-[300px] overflow-hidden border border-navy/10 relative">
+            <img 
+              src="/townhouse.png" 
+              alt="London Residential Streetscape" 
+              className="w-full h-full object-cover mix-blend-luminosity brightness-95" 
+            />
+            <div className="absolute bottom-4 left-6 bg-navy/80 text-bone text-[8px] font-automobile tracking-widest uppercase px-3 py-1.5 border border-white/10">
+              London Residential Streetscape
+            </div>
+          </div>
+        </div>
+
+        {/* C2 Licence Block */}
+        <div className="bg-navy text-bone p-10 border border-white/5 mb-16 flex flex-col md:flex-row gap-8 items-center justify-between">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Award className="text-[#DAA520]" size={28} />
+              <h2 className="text-2xl font-headings italic font-bold">What is a C2 Licence?</h2>
+            </div>
+            <p className="text-xs uppercase tracking-wider font-automobile text-bone/70 max-w-3xl leading-relaxed">
+              A C2 licence (Large HMO Licence) is required for properties with 7 or more occupants. Faith & Co holds C2 licences across the managed portfolio - making the company one of very few estate agents in London who can legitimately offer properties to children's home operators and other organisations requiring C2-compliant accommodation. This is a rare and significant credential.
+            </p>
+          </div>
+          <Link to="/contact" className="bg-[#DAA520] hover:bg-[#B8860B] text-navy font-bold text-[10px] tracking-[0.25em] uppercase px-8 py-4 shrink-0 text-center w-full md:w-auto">
+            Inquire About C2 Stocks
+          </Link>
+        </div>
+
+        {/* 9 Placement Sectors Grid (Two Columns on Desktop) */}
+        <div>
+          <h2 className="text-3xl font-headings italic text-center mb-4">Placement Sectors We Support</h2>
+          <p className="text-center text-[10px] font-automobile tracking-widest text-[#DAA520] uppercase mb-12">C2 & HMO Compliant Inventory</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {sectors.map((sec, idx) => (
+              <div 
+                key={idx} 
+                className="border border-navy/10 p-8 bg-white/40 shadow-sm hover:border-[#DAA520] transition-colors duration-300 flex items-start gap-6"
+              >
+                <div className="p-3 border border-navy/5 bg-white/60 shrink-0">
+                  {sec.icon}
+                </div>
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <h3 className="font-headings italic text-xl font-bold">{sec.title}</h3>
+                    <span className="bg-[#DAA520]/15 text-[#B8860B] text-[8px] font-automobile tracking-wider uppercase py-0.5 px-2 font-bold">
+                      {sec.badge}
+                    </span>
+                  </div>
+                  <p className="text-xs text-navy/70 leading-relaxed font-automobile uppercase tracking-wider">
+                    {sec.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
 };
 
 export default CareSectorPage;

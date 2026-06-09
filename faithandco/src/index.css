@@ -14,14 +14,14 @@
     background-color: var(--bone-white);
     color: var(--navy-blue);
     @apply antialiased selection:bg-navy selection:text-bone;
-    font-family: 'EB Garamond', serif;
+    font-family: 'Inter', 'Montserrat', sans-serif;
     line-height: 1.8;
     overflow-x: hidden;
     width: 100%;
   }
 
   h1, h2, h3, h4, .font-headings {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Playfair Display', 'Cinzel', serif;
     letter-spacing: 0.05em;
     font-weight: 400;
     text-transform: none;
@@ -29,7 +29,7 @@
   }
 
   .font-automobile {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Montserrat', 'Inter', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.4em;
   }
@@ -50,10 +50,18 @@
   }
   
   .service-card:hover {
-    background: rgba(255, 255, 255, 0.25) !important;
-    border-color: #EBE9E4 !important;
-    transform: translateY(-10px) scale(1.05);
-  }
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: #EBE9E4 !important;
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure SVG icons inherit text color for consistency */
+.service-card svg, .nav-link svg {
+  color: currentColor;
+  fill: currentColor;
+}
+
 
   .btn-slate {
     background: #708090 !important;

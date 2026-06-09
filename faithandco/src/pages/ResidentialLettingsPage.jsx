@@ -1,94 +1,58 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import OptionChecklist from '../components/OptionChecklist';
-import ProcessSteps from '../components/ProcessSteps';
-import Contact from '../components/Contact';
-import { managementFaqs } from '../data/faqData';
-import { Search, MapPin, Calculator, ShieldCheck, Key, FileCheck, ClipboardCheck } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Image, Users, ClipboardCheck, FileText, CheckSquare, Heart } from 'lucide-react';
 
 const ResidentialLettingsPage = () => {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+  const steps = [
+    { title: "Professional Marketing", desc: "High-quality photography, compelling listing descriptions, promotion on Rightmove, Zoopla, and our tenant network.", icon: <Image size={24} className="text-[#DAA520]" /> },
+    { title: "Accompanied Viewings", desc: "All viewings conducted by our team at flexible times. Prospective tenants qualified before booking.", icon: <Users size={24} className="text-[#DAA520]" /> },
+    { title: "Tenant Referencing", desc: "Full credit checks, employment verification, previous landlord references, and right-to-rent document checks.", icon: <ClipboardCheck size={24} className="text-[#DAA520]" /> },
+    { title: "Tenancy Agreement", desc: "Legally compliant tenancy agreement, deposit registration, and all prescribed information issued.", icon: <FileText size={24} className="text-[#DAA520]" /> },
+    { title: "Move-In Management", desc: "Check-in inventory, meter readings, key handover, and all move-in documentation.", icon: <CheckSquare size={24} className="text-[#DAA520]" /> },
+    { title: "Optional Full Management", desc: "Add full property management at any point after the tenancy begins.", icon: <Heart size={24} className="text-[#DAA520]" /> }
+  ];
 
-    const lettingTiers = [
-        {
-            title: "Tenant-Find Only",
-            desc: "We find and place the right tenant in your property, then hand management back to you. You remain in full control of the ongoing tenancy.",
-            features: [
-                "Free rental valuation and market appraisal",
-                "Professional photography and property marketing",
-                "Viewings coordinated and conducted by our team",
-                "Full tenant referencing and ID verification",
-                "Tenancy agreement drawn up and signed",
-                "Deposit registered and move-in completed"
-            ]
-        },
-        {
-            title: "Tenant-Find Plus Full Management",
-            desc: "We find and place the tenant, then continue managing every aspect of the tenancy on your behalf. Nothing is left for you to deal with.",
-            features: [
-                "Everything in Option 01, plus ongoing management",
-                "Rent collection every month",
-                "All tenant communication handled for you",
-                "Routine inspections and written condition reports",
-                "Minor maintenance and repairs coordinated",
-                "Optional Guaranteed Rent, fixed income every month"
-            ]
-        }
-    ];
+  return (
+    <div className="bg-bone text-navy min-h-screen pt-[120px] pb-24 selection:bg-navy selection:text-bone">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-12">
+        <span className="text-[#DAA520] font-automobile text-[10px] uppercase tracking-[0.4em] block mb-4">Lettings Specialists</span>
+        <h1 className="text-4xl md:text-6xl font-headings italic mb-8">Professional Residential Lettings Across Greater London and the Home Counties</h1>
+        
+        <p className="text-navy/70 leading-relaxed text-lg max-w-3xl mb-16">
+          Our residential lettings service is for landlords who want professional tenant placement without committing to full ongoing management. We market your property, conduct viewings, carry out thorough referencing, and manage the full move-in process.
+        </p>
 
-    const startSteps = [
-        { title: "Free Rental Valuation", desc: "Our London letting agents assess the property's condition and market demand to agree a realistic rental figure." },
-        { title: "We Market & Find Your Tenant", desc: "Professional photography, listing on major platforms, viewings, and thorough referencing of every applicant." },
-        { title: "Placement & Beyond", desc: "Tenancy agreement, deposit registration, and move-in. We hand back or continue managing based on your choice." }
-    ];
-
-    return (
-        <div className="min-h-screen bg-white text-dark pt-[80px]">
-            {/* Minimal Technical Hero */}
-            <section className="px-6 md:px-10 py-24 bg-dark text-white text-center">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1 }}
-                >
-                    <span className="text-[10px] uppercase tracking-[0.6em] text-white/40 block mb-6">Residential Lettings</span>
-                    <h1 className="text-5xl md:text-8xl font-[Outfit] font-extrabold uppercase tracking-tighter leading-[0.9] mb-8">
-                        Lettings <br /> <span className="text-[#DAA520]">Agents</span>
-                    </h1>
-                    <p className="max-w-3xl mx-auto text-white/60 text-sm md:text-base leading-relaxed font-sans mt-8 px-4">
-                        Professional residential lettings for landlords across London. Whether you want us to find the right tenant and hand back control, or take on full ongoing management we handle the entire process from valuation to placement, with optional guaranteed rent available.
-                    </p>
-                </motion.div>
-            </section>
-
-            {/* Jump Straight into Boxed UI: Dual Option Checklist */}
-            <OptionChecklist tiers={lettingTiers} />
-
-            {/* 3-Step Process for Lettings */}
-            <ProcessSteps title="Residential Onboarding Sequence" steps={startSteps} />
-
-            {/* Market Context Block */}
-            <section className="py-24 px-6 md:px-10 border-t border-dark/5 bg-white">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-                    <div>
-                        <h3 className="text-xs font-bold uppercase tracking-[0.4em] text-dark/30 mb-8 font-[Outfit]">The London Market</h3>
-                        <h2 className="text-4xl font-bold uppercase tracking-tighter mb-8 leading-tight">Why Residential Properties Let Well Across London</h2>
-                        <div className="space-y-6 text-dark/60 text-sm leading-relaxed font-sans">
-                            <p>London is one of the UK's most consistently strong rental markets, driven by major business hubs and transport connectivity.</p>
-                            <p>Our residential lettings service combines local market knowledge with an active tenant pipeline, helping landlords attract reliable tenants and keep their properties performing consistently.</p>
-                        </div>
-                    </div>
-                    <div className="relative aspect-video lg:aspect-square group overflow-hidden bg-dark">
-                        <img src="/img2.jpeg" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="West London Property" />
-                    </div>
-                </div>
-            </section>
-
-            <Contact faqs={managementFaqs} />
+        {/* 6-Stage Process Flow Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {steps.map((step, idx) => (
+            <div key={idx} className="border border-navy/10 p-8 bg-white/40 shadow-sm flex flex-col justify-between">
+              <div>
+                <span className="text-[#DAA520] font-automobile text-[10px] font-bold block mb-4">Stage 0{idx + 1}</span>
+                <div className="mb-4">{step.icon}</div>
+                <h3 className="font-headings italic text-xl font-bold mb-3">{step.title}</h3>
+                <p className="text-xs text-navy/70 leading-relaxed font-automobile uppercase tracking-wider">{step.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
-    );
+
+        <div className="bg-[#111827] text-bone p-12 text-center space-y-6">
+          <h2 className="text-2xl md:text-3xl font-headings italic">Need help finding the right tenants?</h2>
+          <p className="text-[10px] font-automobile uppercase tracking-widest text-bone/60 max-w-xl mx-auto">
+            Get in touch with our residential lettings team today and let's get your property listed on major portals.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
+            <Link to="/contact" className="bg-[#DAA520] hover:bg-[#B8860B] text-navy font-bold text-[10px] tracking-[0.25em] uppercase px-8 py-4">
+              Get In Touch
+            </Link>
+            <Link to="/landlords/free-valuation" className="border border-white/20 hover:border-white text-bone font-bold text-[10px] tracking-[0.25em] uppercase px-8 py-4">
+              Get Free Valuation
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ResidentialLettingsPage;

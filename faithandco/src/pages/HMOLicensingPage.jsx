@@ -1,102 +1,83 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
-import TechnicalGrid from '../components/TechnicalGrid';
-import Contact from '../components/Contact';
-import { complianceFaqs } from '../data/faqData';
-import { ShieldAlert, Users, Home } from 'lucide-react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { ShieldCheck, Award, AlertTriangle, ArrowRight } from 'lucide-react';
 
 const HMOLicensingPage = () => {
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+  const types = [
+    {
+      title: "Mandatory HMO Licensing",
+      desc: "Applies nationwide. Any property let to five or more occupants from two or more households sharing kitchen or bathroom facilities must hold a mandatory HMO licence. The property must meet national bedroom size standards and fire safety rules.",
+      icon: <ShieldCheck className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Additional HMO Licensing",
+      desc: "Set by individual London borough councils (e.g. Ealing, Hounslow, Brent). Applies to properties let to three or four occupants from two or more households sharing facilities. This is a local policy - check with your specific borough or let Faith & Co advise you.",
+      icon: <Award className="text-[#DAA520]" size={24} />
+    },
+    {
+      title: "Selective Licensing",
+      desc: "Set by individual councils for standard single-let or family properties within designated wards. Under selective licensing, every single rental property in the ward must be licensed - regardless of the number of occupants.",
+      icon: <AlertTriangle className="text-[#DAA520]" size={24} />
+    }
+  ];
 
-    const licensingCriteria = [
-        { 
-            title: "5+ Occupants", 
-            desc: "Mandatory licensing applies if your property is rented to five or more individuals who are not part of the same family.",
-            icon: <Users size={32} />
-        },
-        { 
-            title: "Multiple Households", 
-            desc: "Applicable where occupants form more than one household (unrelated individuals or couples) within the building.",
-            icon: <ShieldAlert size={32} />
-        },
-        { 
-            title: "Shared Facilities", 
-            desc: "Tenants share essential spaces like kitchens or bathrooms, defining the property as a shared home under HMO law.",
-            icon: <Home size={32} />
-        }
-    ];
+  const services = [
+    "HMO Compliance Audit: We assess your property layout and safety features against council HMO standards.",
+    "Licence Application: We prepare, submit, and manage the licence application with the borough council.",
+    "Required Certificates: We arrange gas safety, EICR, fire risk assessment, and alarm installation.",
+    "Council Inspections: We represent you and accompany the council housing officer during property inspections.",
+    "Licence Renewals: We track and manage renewals before the current licence expires."
+  ];
 
-    const safetyDocs = [
-        { item: "Gas Safety Certificate (CP12)", cycle: "Annually" },
-        { item: "EICR (Electrical Inspection)", cycle: "Every 5 Years" },
-        { item: "Fire Risk Assessment", cycle: "Annually (Recommended)" },
-        { item: "Fire Alarm Testing Cert", cycle: "Annually" },
-        { item: "Emergency Lighting Test", cycle: "Annually (If Applicable)" },
-        { item: "Portable Appliance Testing (PAT)", cycle: "Annually" },
-        { item: "Legionella Risk Assessment", cycle: "Periodic Review" }
-    ];
+  return (
+    <div className="bg-bone text-navy min-h-screen pt-[120px] pb-24 selection:bg-navy selection:text-bone">
+      <div className="max-w-[900px] mx-auto px-6 md:px-12">
+        <span className="text-[#DAA520] font-automobile text-[10px] uppercase tracking-[0.4em] block mb-4">HMO Regulations</span>
+        <h1 className="text-4xl md:text-5xl font-headings italic mb-8">HMO Licensing Guide for London Landlords</h1>
+        
+        <p className="text-navy/70 leading-relaxed text-lg max-w-3xl mb-12">
+          Understanding HMO licensing rules in London is essential to avoid significant fines. Here is a guide to the three types of licensing, how they are applied in London, and how Faith & Co manages the full process.
+        </p>
 
-    return (
-        <div className="min-h-screen bg-white text-dark pt-[80px]">
-            {/* Technical Hero */}
-            <section className="px-6 md:px-10 py-24 bg-dark text-white text-center">
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 1 }}
-                >
-                    <span className="text-[10px] uppercase tracking-[0.6em] text-white/40 block mb-6">Regulatory Stewardship</span>
-                    <h1 className="text-5xl md:text-8xl font-[Outfit] font-extrabold uppercase tracking-tighter leading-[0.9] mb-8">
-                        The HMO <br /> <span className="text-[#DAA520]">Licensing Guide</span>
-                    </h1>
-                    <p className="max-w-3xl mx-auto text-white/60 text-sm md:text-base leading-relaxed font-sans px-4">
-                        Comprehensive compliance for London HMO landlords. Ensure your property meets mandatory standards and protects your investment from regulatory friction.
-                    </p>
-                </motion.div>
-            </section>
-
-            {/* Licensing Thresholds */}
-            <TechnicalGrid 
-                title="When is a Licence Mandatory?" 
-                items={licensingCriteria} 
-                columns={3} 
-            />
-
-            {/* Compliance Matrix Table */}
-            <section className="py-24 px-6 md:px-10 bg-[#FAF9F6] border-t border-dark/5">
-                <div className="max-w-4xl mx-auto">
-                    <h2 className="text-3xl md:text-5xl font-[Outfit] font-black uppercase tracking-tighter mb-12 text-center italic">
-                        Safety & <span className="text-[#DAA520]">Compliance Matrix</span>
-                    </h2>
-                    <div className="overflow-x-auto border-[0.5px] border-dark/10 bg-white">
-                        <table className="w-full border-collapse">
-                            <thead>
-                                <tr className="border-b-[0.5px] border-dark/10 bg-dark text-white">
-                                    <th className="p-8 text-left text-[10px] uppercase tracking-widest font-bold">Essential Documentation</th>
-                                    <th className="p-8 text-left text-[10px] uppercase tracking-widest font-bold">Review Cycle</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {safetyDocs.map((doc, idx) => (
-                                    <tr key={idx} className="border-b-[0.5px] border-dark/10 hover:bg-dark/[0.02]">
-                                        <td className="p-8 text-xs font-bold uppercase tracking-tight">{doc.item}</td>
-                                        <td className="p-8 text-xs font-medium text-[#DAA520] uppercase tracking-widest">{doc.cycle}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                    <p className="mt-8 text-[10px] uppercase tracking-widest text-dark/30 text-center">
-                        Note: Local authorities may require additional selective or additional licensing tiers.
-                    </p>
-                </div>
-            </section>
-
-            <Contact faqs={complianceFaqs} />
+        {/* 3 Licensing Types */}
+        <div className="space-y-8 mb-16">
+          {types.map((t, idx) => (
+            <div key={idx} className="border border-navy/10 p-8 bg-white/40 shadow-sm flex items-start gap-4">
+              <div className="p-3 border border-navy/5 bg-white/60 shrink-0">
+                {t.icon}
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-headings italic text-xl font-bold">{t.title}</h3>
+                <p className="text-xs text-navy/70 leading-relaxed font-automobile uppercase tracking-wider">{t.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
-    );
+
+        {/* How We Manage It */}
+        <div className="mb-16 bg-[#111827] text-bone p-8 md:p-12 border border-white/5 space-y-6">
+          <h3 className="font-headings italic text-2xl text-[#DAA520] font-bold">How Faith & Co Manages HMO Licensing</h3>
+          <ul className="space-y-4 text-xs uppercase tracking-wider font-automobile text-bone/70">
+            {services.map((s, idx) => (
+              <li key={idx} className="border-b border-white/5 pb-3 last:border-0 last:pb-0">
+                • {s}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="bg-navy text-bone p-12 text-center space-y-6">
+          <h2 className="text-2xl md:text-3xl font-headings italic">Need an HMO licence for your property?</h2>
+          <p className="text-[10px] font-automobile uppercase tracking-widest text-bone/60 max-w-xl mx-auto">
+            Contact our HMO compliance team today and let's get your licensing audit scheduled.
+          </p>
+          <Link to="/contact" className="bg-[#DAA520] hover:bg-[#B8860B] text-navy font-bold text-[10px] tracking-[0.25em] uppercase px-8 py-4 inline-block">
+            Contact HMO Specialists
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default HMOLicensingPage;

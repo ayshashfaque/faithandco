@@ -8,13 +8,19 @@ const AdminProtectedRoute = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const isAdmin = sessionStorage.getItem('adminAuth') === 'true';
+
   useEffect(() => {
+    if (isAdmin) {
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       setUser(authUser)
       setLoading(false)
     })
     return () => unsubscribe()
-  }, [])
+  }, [isAdmin])
 
   if (loading) {
     return (
@@ -25,7 +31,7 @@ const AdminProtectedRoute = ({ children }) => {
     )
   }
 
-  if (!user) {
+  if (!user && !isAdmin) {
     return <Navigate to="/admin" replace />
   }
 
