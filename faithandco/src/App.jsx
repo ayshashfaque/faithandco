@@ -31,6 +31,7 @@ import ServicedAccommodationPage from './pages/ServicedAccommodationPage';
 import ServicedAccommodationSub from './pages/ServicedAccommodationSub';
 import CompanyCorporateLets from './pages/CompanyCorporateLets';
 import ServicePlaceholder from './pages/ServicePlaceholder';
+import C2LicensedProperties from './pages/C2LicensedProperties';
 import LandlordsPage from './pages/LandlordsPage';
 
 // Landlords Pages
@@ -107,7 +108,7 @@ function App() {
         <Route path="/services/serviced-accommodation/:subType" element={<ServicedAccommodationSub />} />
         <Route path="/services/company-corporate-lets" element={<CompanyCorporateLets />} />
         <Route path="/services/specialist" element={<ServicesOverview />} />
-        <Route path="/services/c2-licensed-properties" element={<ServicePlaceholder />} />
+        <Route path="/services/c2-licensed-properties" element={<C2LicensedProperties />} />
         
         {/* Guaranteed Rent (Top level) */}
         <Route path="/guaranteed-rent" element={<GuaranteedRentPage />} />

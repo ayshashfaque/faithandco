@@ -3,20 +3,36 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, CheckCircle2, Heart, Building2, Key, Award, FileText, Home as HomeIcon, Plus, Minus, Quote, Shield, Users } from 'lucide-react';
 
 const Home = () => {
-  // Video hero refs
   const videoRef = useRef(null);
+
   useEffect(() => {
-    if (!videoRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const video = videoRef.current;
-        if (entry.isIntersecting) video.play();
-        else { video.pause(); video.currentTime = 0; }
-      },
-      { threshold: 0.5 }
-    );
-    observer.observe(videoRef.current);
-    return () => observer.disconnect();
+    // Delay the scroll observer by 2 seconds to ensure initial mobile paint and native autoplay kick in flawlessly
+    const timer = setTimeout(() => {
+      if (!videoRef.current) return;
+      
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          const video = videoRef.current;
+          if (!video) return;
+          
+          if (entry.isIntersecting) {
+            // Only trigger play if user scrolls deep and comes back
+            video.play().catch(e => console.log('Native play override:', e));
+          } else {
+            video.pause();
+          }
+        },
+        { threshold: 0.1 } // Only pause when almost fully out of view
+      );
+      
+      observer.observe(videoRef.current);
+      
+      return () => {
+        observer.disconnect();
+      };
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Services data 
@@ -96,7 +112,15 @@ const Home = () => {
 
       {/* 1. HERO ANIMATION / VIDEO SECTION */}
       <section className="relative min-h-[85vh] flex flex-col justify-center items-center overflow-hidden py-20 px-6 md:px-12 bg-[#0b1320]">
-        <video ref={videoRef} autoPlay muted loop playsInline poster="/herofinal.png" className="absolute inset-0 w-full h-full object-cover">
+        <video
+          ref={videoRef}
+          poster="/herofinal.png"
+          autoPlay
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ backgroundImage: 'url(/herofinal.png)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }}
+        >
           <source src="/loophero.mp4" type="video/mp4" />
         </video>
         <div className="relative z-10 max-w-[1000px] text-center space-y-6">

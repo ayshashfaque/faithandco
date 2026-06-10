@@ -108,7 +108,7 @@ const Navbar = () => {
       {/* MAIN NAV */}
       <nav className="w-full bg-white flex items-center justify-between px-4 md:px-8 py-0">
         <Link to="/" onClick={() => handleNavClick('/')} className="flex items-center nav-link group text-navy hover:text-[#DAA520] shrink-0">
-          <img src="/logofinal.png" className="w-[120px] md:w-[140px] h-auto object-contain transition-transform duration-300 group-hover:scale-105" alt="Faith & Co" />
+          <img src="/logofinal.png" className="w-[120px] md:w-[140px] h-auto object-contain transition-transform duration-300 group-hover:scale-105" alt="Faith & Co Estates" />
         </Link>
 
         {/* Desktop links */}
@@ -143,9 +143,9 @@ const Navbar = () => {
               </AnimatePresence>
             </div>
           ))}
-          <Link to="/landlords/free-valuation"
+          <Link to="/contact"
             className="bg-[#DAA520] hover:bg-[#B8860B] text-white font-bold text-[9.5px] uppercase tracking-[0.2em] py-2.5 px-5 transition-all duration-300 shadow-md whitespace-nowrap ml-2">
-            Free Rental Valuation
+            Speak To Our Team
           </Link>
         </div>
 
@@ -161,7 +161,7 @@ const Navbar = () => {
           <motion.div initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }}
             className="fixed inset-0 bg-bone xl:hidden z-[999999] flex flex-col p-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-8">
-              <img src="/logofinal.png" className="h-12 w-auto object-contain" alt="Logo" />
+              <img src="/logofinal.png" className="h-12 w-auto object-contain" alt="Faith & Co Estates" />
               <button onClick={() => setIsOpen(false)} aria-label="Close menu"><X size={26} /></button>
             </div>
             <div className="flex-1 flex flex-col gap-1">
@@ -197,9 +197,9 @@ const Navbar = () => {
                   )}
                 </div>
               ))}
-              <Link to="/landlords/free-valuation" onClick={() => setIsOpen(false)}
+              <Link to="/contact" onClick={() => setIsOpen(false)}
                 className="mt-4 bg-[#DAA520] hover:bg-[#B8860B] text-white font-bold text-center text-[10px] uppercase tracking-[0.2em] py-4 block">
-                Free Rental Valuation
+                Speak To Our Team
               </Link>
               <div className="mt-6 text-center space-y-1 text-[10px] text-navy/50 font-automobile uppercase tracking-widest">
                 <div><a href="tel:02085741700" className="hover:text-navy">020 8574 1700</a></div>
