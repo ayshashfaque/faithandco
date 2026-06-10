@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bone-white: #F2F0EB;
+  --navy-blue: #0A1A2F;
+  --cool-platinum: #E5E7E9;
+  --slate-blue: #708090;
+}
+
+@layer base {
+  body {
+    background-color: var(--bone-white);
+    color: var(--navy-blue);
+    @apply antialiased selection:bg-navy selection:text-bone;
+    font-family: 'Inter', 'Montserrat', sans-serif;
+    line-height: 1.8;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  h1, h2, h3, h4, .font-headings {
+    font-family: 'Playfair Display', 'Cinzel', serif;
+    letter-spacing: 0.05em;
+    font-weight: 400;
+    text-transform: none;
+    color: var(--navy-blue);
+  }
+
+  .font-automobile {
+    font-family: 'Montserrat', 'Inter', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+  }
+}
+
+@layer components {
+  .service-card {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px);
+    border: 0.5px solid rgba(255, 255, 255, 0.1) !important;
+    border-top: 1px solid #EBE9E4 !important;
+    border-left: 1px solid #EBE9E4 !important;
+    transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    @apply flex flex-col items-center justify-center text-center px-6;
+    width: 400px;
+    height: 220px;
+  }
+  
+  .service-card:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  border-color: #EBE9E4 !important;
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure SVG icons inherit text color for consistency */
+.service-card svg, .nav-link svg {
+  color: currentColor;
+  fill: currentColor;
+}
+
+
+  .btn-slate {
+    background: #708090 !important;
+    color: white !important;
+    border: none !important;
+    font-family: 'Outfit', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    padding: 1.25rem 3.5rem;
+    font-weight: bold;
+    display: inline-block;
+    @apply hover:opacity-90 transition-all duration-500 shadow-2xl rounded-none;
+  }
+
+  .origin-image {
+    width: 75%;
+    max-width: 1100px;
+    height: auto;
+    mix-blend-mode: multiply;
+  }
+
+  .interaction-patch {
+    pointer-events: all !important;
+    z-index: 9999 !important;
+  }
+
+  /* THE INTERACTION FIX */
+  .gis-link, 
+  .admin-login-btn, 
+  .contact-form input, 
+  .contact-form textarea,
+  .interaction-patch * {
+    position: relative !important;
+    z-index: 9999 !important; /* Forces it above all parallax layers */
+    pointer-events: auto !important; /* Ensures the browser registers the click */
+    cursor: pointer !important;
+  }
+
+  /* NAVBAR 99999 PRIORITY */
+  .navbar, nav {
+    z-index: 99999 !important;
+  }
+  .nav-link {
+    pointer-events: auto !important;
+  }
+
+  .contact-form input, .contact-form textarea {
+    cursor: text !important; /* Ensures you can see the typing cursor */
+  }
+
+  /* NAV LOGO BIGGER PRESENCE */
+  .nav-logo { height: 100px !important; width: auto !important; }
+
+  /* HERO TAGLINE */
+  .hero-tagline {
+    font-weight: 500 !important;
+    font-size: 1.2rem !important;
+    margin-top: 5vh !important; 
+    letter-spacing: 0.2em !important;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.8) !important;
+    opacity: 1 !important;
+  }
+
+  /* LOGO GRID FOOTER */
+  .f-logo {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+    filter: brightness(0) invert(1) opacity(0.6); /* Makes them Bone-White on Navy */
+    justify-self: center;
+  }
+}
+
+@layer utilities {
+  .text-navy { color: var(--navy-blue); }
+  .text-bone { color: var(--bone-white); }
+  .bg-navy { background-color: var(--navy-blue); }
+  .bg-bone { background-color: var(--bone-white); }
+  .bg-platinum { background-color: var(--cool-platinum); }
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bone-white); }
+::-webkit-scrollbar-thumb { background: var(--navy-blue); }
+
