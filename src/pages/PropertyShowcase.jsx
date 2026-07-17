@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { properties as localProperties } from '../data/properties';
@@ -34,6 +34,78 @@ const LoadingSkeleton = () => (
         </div>
     </div>
 );
+
+const PropertyCard = ({ p }) => {
+    const cardRef = useRef(null);
+    const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+    const handleMouseMove = (e) => {
+        if (cardRef.current) {
+            const rect = cardRef.current.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            setCoords({ x, y });
+        }
+    };
+
+    return (
+        <motion.div 
+            ref={cardRef}
+            onMouseMove={handleMouseMove}
+            layout
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
+            className="relative w-full max-w-[1200px] lg:min-w-[800px] lg:h-[450px] flex flex-col lg:flex-row bg-[#060e16] border-2 border-white/10 shadow-2xl overflow-hidden group hover:border-[#C9A84C]/50 hover:shadow-[0_0_30px_rgba(201,168,76,0.15)] transition-all duration-500"
+        >
+            {/* Ambient Gold Aura Layer */}
+            <div 
+                className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{
+                    background: `radial-gradient(400px circle at ${coords.x}px ${coords.y}px, rgba(201, 168, 76, 0.12), transparent 80%)`,
+                    zIndex: 1,
+                }}
+            />
+
+            {/* Left Side: Feature Image (60%) */}
+            <div className="w-full lg:w-[60%] h-[300px] lg:h-full overflow-hidden border-b lg:border-b-0 lg:border-r-2 border-white/10 relative z-10">
+                {p.imageUrls && p.imageUrls[0] ? (
+                    <img 
+                        src={p.imageUrls[0]} 
+                        alt={p.title} 
+                        className="w-full h-full object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-107"
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-white/5">
+                        <Building size={48} className="text-white/10" />
+                    </div>
+                )}
+            </div>
+
+            {/* Right Side: Details (40%) */}
+            <div className="w-full lg:w-[40%] p-10 lg:p-14 flex flex-col justify-between bg-midnight/50 backdrop-blur-sm relative z-10">
+                <div className="space-y-6">
+                    <div className="flex justify-between items-start">
+                        <span className="text-[10px] uppercase tracking-[0.4em] font-black text-white/40">{p.status}</span>
+                        <span className="text-2xl font-headings text-[#C9A84C] italic">{p.price ? `£${Number(p.price).toLocaleString()}` : 'POA'}</span>
+                    </div>
+                    <h3 className="text-3xl lg:text-4xl font-bold font-headings text-white italic leading-tight">{p.title}</h3>
+                    <div className="flex items-center gap-3 text-white/60">
+                        <MapPin size={16} />
+                        <span className="text-[11px] uppercase tracking-widest">{p.location || generateRandomLondonAddress()}</span>
+                    </div>
+                </div>
+
+                <div className="pt-8">
+                    <Link to={`/property/${p.id}`} onClick={(e) => e.stopPropagation()} className="inline-block bg-[#C9A84C] text-[#060e16] px-6 py-3 hover:bg-[#E8C878] transition-colors pb-3.5 w-fit">
+                        <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold"><span>View Details</span> <ChevronRight size={14} /></span>
+                    </Link>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
 
 const PropertyShowcase = () => {
     const [properties, setProperties] = useState(null);
@@ -149,47 +221,7 @@ const PropertyShowcase = () => {
                         <div className="flex flex-col gap-12 items-center">
                             <AnimatePresence mode="popLayout">
                                 {filteredProperties.map((p) => (
-                                    <motion.div 
-                                        key={p.id}
-                                        layout
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, scale: 0.95 }}
-                                        transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
-                                        className="relative w-full max-w-[1200px] lg:min-w-[800px] lg:h-[450px] flex flex-col lg:flex-row bg-midnight border-2 border-bone/20 shadow-2xl overflow-hidden group hover:border-bone/40 transition-colors"
-                                    >
-                                        {/* Left Side: Feature Image (60%) */}
-                                        <div className="w-full lg:w-[60%] h-[300px] lg:h-full overflow-hidden border-b lg:border-b-0 lg:border-r-2 border-bone/20">
-                                            {p.imageUrls && p.imageUrls[0] ? (
-                                                <img src={p.imageUrls[0]} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center bg-white/5">
-                                                    <Building size={48} className="text-white/10" />
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Right Side: Details (40%) */}
-                                        <div className="w-full lg:w-[40%] p-10 lg:p-14 flex flex-col justify-between bg-midnight/50 backdrop-blur-sm">
-                                            <div className="space-y-6">
-                                                <div className="flex justify-between items-start">
-                                                    <span className="text-[10px] uppercase tracking-[0.4em] font-black text-bone/40">{p.status}</span>
-                                                    <span className="text-2xl font-headings text-bone italic">{p.price ? `£${p.price.toLocaleString()}` : 'POA'}</span>
-                                                </div>
-                                                <h3 className="text-3xl lg:text-4xl font-bold font-headings text-white italic leading-tight">{p.title}</h3>
-                                                <div className="flex items-center gap-3 text-bone/60">
-                                                    <MapPin size={16} />
-                                                    <span className="text-[11px] uppercase tracking-widest">{p.location || generateRandomLondonAddress()}</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="pt-8">
-                                                <Link to={`/property/${p.id}`} onClick={(e) => e.stopPropagation()} className="inline-block bg-[#DAA520] text-midnight px-4 py-2 rounded hover:bg-[#C9972E] transition-colors border-b-2 border-bone/20 pb-3 w-fit">
-                                                    <span className="flex items-center gap-2"><span>View Details</span> <ChevronRight size={14} /></span>
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </motion.div>
+                                    <PropertyCard key={p.id} p={p} />
                                 ))}
                
                             </AnimatePresence>

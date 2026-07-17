@@ -7,7 +7,7 @@ import { auth } from './firebase';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
-import TrustBadgeStrip from './components/TrustBadgeStrip';
+import CursorTrail from './components/CursorTrail';
 
 // Pages
 import Home from './pages/Home';
@@ -82,6 +82,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <CursorTrail />
       <Navbar />
       
       <Routes>
@@ -138,7 +139,7 @@ function App() {
         {/* Admin */}
         <Route 
           path="/admin" 
-          element={user ? <Navigate to="/admin/dashboard" replace /> : <AdminLogin />} 
+          element={(user || sessionStorage.getItem('adminAuth') === 'true') ? <Navigate to="/admin/dashboard" replace /> : <AdminLogin />} 
         />
         <Route 
           path="/admin/dashboard" 
@@ -150,7 +151,6 @@ function App() {
         />
       </Routes>
 
-      <TrustBadgeStrip />
       <Footer />
       <WhatsAppButton />
     </Router>

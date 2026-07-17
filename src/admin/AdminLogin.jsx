@@ -12,6 +12,10 @@ const AdminLogin = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    if (sessionStorage.getItem('adminAuth') === 'true') {
+      navigate('/admin/dashboard')
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) navigate('/admin/dashboard')
     })
@@ -61,7 +65,7 @@ const AdminLogin = () => {
               <div className="relative group">
                 <User className="absolute left-0 top-4 text-navy/30 group-focus-within:text-navy transition-colors" size={18} />
                 <input 
-                  type="email" 
+                  type="text" 
                   placeholder="AUTHORISED EMAIL" 
                   className="input-underline w-full pl-10 text-[11px] font-automobile font-bold tracking-[0.2em] pointer-events-auto bg-transparent focus:outline-none py-4 text-navy" 
                   value={email}

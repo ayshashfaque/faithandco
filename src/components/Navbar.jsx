@@ -1,215 +1,325 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Phone, Mail } from 'lucide-react';
 
-const navData = [
-  { type: 'link', label: 'Home', path: '/' },
-  {
-    type: 'dropdown',
-    label: 'About Us',
-    path: '/about-us',
-    items: [
-      { name: 'Why Choose Faith & Co', path: '/about-us/why-choose-us' },
-      { name: 'Our Story', path: '/about-us/our-story' },
-      { name: 'Resources & Guides', path: '/about-us/resources-and-guides' },
-      { name: 'Areas We Cover', path: '/about-us/areas-we-cover' },
-    ]
-  },
-  {
-    type: 'dropdown',
-    label: 'Our Services',
-    path: '/services',
-    items: [
-      { name: 'HMO Management', path: '/services/hmo-management' },
-      { name: 'Property Management', path: '/services/property-management' },
-      { name: 'Residential Letting', path: '/services/residential-letting' },
-      { name: 'Portfolio Management', path: '/services/portfolio-management' },
-    ]
-  },
-  { type: 'link', label: 'Guaranteed Rent', path: '/guaranteed-rent' },
-  {
-    type: 'dropdown',
-    label: 'Specialist Services',
-    path: '/services/specialist',
-    items: [
-      { name: 'Care Sector Lettings', path: '/services/care-sector-lettings' },
-      { name: 'Council & Temporary Accommodation', path: '/services/council-accommodation' },
-      { name: 'Supported Living', path: '/services/supported-living' },
-      { name: 'C2 Licensed Properties', path: '/services/c2-licensed-properties' },
-    ]
-  },
-  {
-    type: 'dropdown',
-    label: 'Serviced Accommodation',
-    path: '/services/serviced-accommodation',
-    items: [
-      { name: 'Corporate Accommodation', path: '/services/serviced-accommodation/corporate' },
-      { name: 'Contractor Accommodation', path: '/services/serviced-accommodation/contractor' },
-      { name: 'Short-Term Let Management', path: '/services/serviced-accommodation/short-term-lets' },
-      { name: 'Company & Corporate Lets', path: '/services/company-corporate-lets' },
-    ]
-  },
-  {
-    type: 'dropdown',
-    label: 'Landlords',
-    path: '/landlords',
-    items: [
-      { name: 'Let With Faith & Co', path: '/landlords/let-with-us' },
-      { name: 'Free Rental Valuation', path: '/landlords/free-valuation' },
-      { name: 'Register as a Landlord', path: '/landlords/register' },
-      { name: 'Guide to Letting', path: '/landlords/guide-to-letting' },
-      { name: 'HMO Licensing Guide', path: '/landlords/hmo-licensing-guide' },
-      { name: 'Maintenance & Repairs Guide', path: '/landlords/maintenance-guide' },
-    ]
-  },
-  { type: 'link', label: 'Contact', path: '/contact' },
-];
+const ChevronDown = () => (
+  <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+);
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState(null);
+  const [openMenu, setOpenMenu] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(null);
   const navigate = useNavigate();
+  const navRef = useRef(null);
 
-  const handleNavClick = (path) => {
-    setIsOpen(false);
-    setActiveMenu(null);
+  // Close all desktop dropdowns
+  const closeAll = useCallback(() => {
+    setOpenMenu(null);
+  }, []);
+
+  // Toggle a specific dropdown
+  const toggle = useCallback((id) => {
+    setOpenMenu(prev => prev === id ? null : id);
+  }, []);
+
+  // Toggle mobile drawer
+  const toggleDrawer = useCallback(() => {
+    setDrawerOpen(prev => !prev);
+    if (!drawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [drawerOpen]);
+
+  const closeDrawer = useCallback(() => {
+    setDrawerOpen(false);
+    document.body.style.overflow = '';
+  }, []);
+
+  // Toggle mobile accordion
+  const dToggle = useCallback((idx) => {
+    setMobileOpen(prev => prev === idx ? null : idx);
+  }, []);
+
+  // Navigate and close everything
+  const go = useCallback((path) => {
+    closeAll();
+    closeDrawer();
+    setMobileOpen(null);
     navigate(path);
-  };
+  }, [closeAll, closeDrawer, navigate]);
+
+  // Click outside to close dropdowns
+  useEffect(() => {
+    const handler = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        closeAll();
+      }
+    };
+    document.addEventListener('click', handler);
+    return () => document.removeEventListener('click', handler);
+  }, [closeAll]);
+
+  // Close drawer on route change
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[99999] flex flex-col font-automobile bg-white border-b border-gray-200">
-      {/* TOP INFO BAR — desktop only */}
-      <div className="hidden md:flex w-full bg-navy text-bone py-[3px] px-6 md:px-12 flex-row items-center justify-between text-[9px] tracking-wider uppercase font-semibold">
-        <div className="flex items-center gap-4 text-bone/60">
-          <span>Mon–Fri 9:00–18:30</span>
-          <span>|</span>
-          <span>Greater London &amp; the Home Counties</span>
+    <>
+      {/* TOPBAR */}
+      <div className="topbar">
+        <div className="tb-left">
+          <span>Mon–Fri 9:00 – 18:30</span>
+          <span>Greater London &amp; Home Counties</span>
         </div>
-        <div className="flex items-center gap-3">
-          <a href="https://www.facebook.com/people/Faith-Co-Estates/61566760918518/" target="_blank" rel="noopener noreferrer" className="hover:text-[#DAA520] transition-colors" aria-label="Facebook">
-            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/in/faith-and-co-estates-58938a316/" target="_blank" rel="noopener noreferrer" className="hover:text-[#DAA520] transition-colors" aria-label="LinkedIn">
-            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-          </a>
-          <a href="https://www.instagram.com/faithandcoestates" target="_blank" rel="noopener noreferrer" className="hover:text-[#DAA520] transition-colors" aria-label="Instagram">
-            <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </a>
-        </div>
-        <div className="flex items-center gap-3 text-bone/80">
-          <a href="tel:02085741700" className="flex items-center gap-1 hover:text-[#DAA520] transition-colors"><Phone size={9} />020 8574 1700</a>
-          <span className="text-bone/20">|</span>
-          <a href="mailto:info@faithandco.co.uk" className="flex items-center gap-1 hover:text-[#DAA520] transition-colors"><Mail size={9} />info@faithandco.co.uk</a>
+        <div className="tb-right">
+          <a href="tel:02085741700" className="tel">020 8574 1700</a>
+          <a href="mailto:info@faithandco.co.uk">info@faithandco.co.uk</a>
         </div>
       </div>
 
-      {/* MAIN NAV */}
-      <nav className="w-full bg-white flex items-center justify-between px-4 md:px-8 py-0">
-        <Link to="/" onClick={() => handleNavClick('/')} className="flex items-center nav-link group text-navy hover:text-[#DAA520] shrink-0">
-          <img src="/logofinal.png" className="w-[120px] md:w-[140px] h-auto object-contain transition-transform duration-300 group-hover:scale-105" alt="Faith & Co Estates" />
-        </Link>
-
-        {/* Desktop links */}
-        <div className="hidden xl:flex items-center gap-5">
-          {navData.map((menu, idx) => (
-            <div key={menu.label} className="relative"
-              onMouseEnter={() => menu.type === 'dropdown' ? setActiveMenu(idx) : null}
-              onMouseLeave={() => setActiveMenu(null)}>
-              {menu.type === 'link' ? (
-                <button onClick={() => handleNavClick(menu.path)}
-                  className="nav-link text-[10px] font-automobile uppercase tracking-[0.22em] text-navy/60 hover:text-navy transition-colors font-bold py-3">
-                  {menu.label}
-                </button>
-              ) : (
-                <button className="nav-link text-[10px] font-automobile uppercase tracking-[0.22em] text-navy/60 hover:text-navy transition-colors font-bold flex items-center gap-0.5 py-3">
-                  {menu.label}
-                  <ChevronDown size={10} className={`transition-transform duration-300 ${activeMenu === idx ? 'rotate-180' : ''}`} />
-                </button>
-              )}
-              <AnimatePresence>
-                {activeMenu === idx && menu.type === 'dropdown' && (
-                  <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}
-                    className="absolute top-full left-0 w-60 bg-bone border border-navy/10 p-3 shadow-2xl space-y-1 z-[99999]">
-                    {menu.items.map((sub) => (
-                      <Link key={sub.name} to={sub.path} onClick={() => handleNavClick(sub.path)}
-                        className="nav-link block text-[9.5px] font-automobile uppercase tracking-[0.15em] text-navy/60 hover:text-navy transition-all py-2 border-b border-navy/5 last:border-0">
-                        {sub.name}
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
-          <Link to="/contact"
-            className="bg-[#DAA520] hover:bg-[#B8860B] text-white font-bold text-[9.5px] uppercase tracking-[0.2em] py-2.5 px-5 transition-all duration-300 shadow-md whitespace-nowrap ml-2">
-            Speak To Our Team
+      {/* NAV */}
+      <nav className="fc-nav" ref={navRef}>
+        <div className="nav-inner">
+          <Link to="/" className="fc-logo" onClick={() => go('/')}>
+            Faith <em>&amp;</em> Co
           </Link>
-        </div>
 
-        {/* Mobile hamburger */}
-        <button onClick={() => setIsOpen(!isOpen)} className="nav-link xl:hidden text-navy p-2" aria-label="Toggle menu">
-          {isOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
-      </nav>
+          <div className="links">
 
-      {/* MOBILE MENU */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }}
-            className="fixed inset-0 bg-bone xl:hidden z-[999999] flex flex-col p-6 overflow-y-auto">
-            <div className="flex justify-between items-center mb-8">
-              <img src="/logofinal.png" className="h-12 w-auto object-contain" alt="Faith & Co Estates" />
-              <button onClick={() => setIsOpen(false)} aria-label="Close menu"><X size={26} /></button>
-            </div>
-            <div className="flex-1 flex flex-col gap-1">
-              {navData.map((link, idx) => (
-                <div key={link.label} className="border-b border-navy/5">
-                  {link.type === 'link' ? (
-                    <button onClick={() => handleNavClick(link.path)}
-                      className="text-base font-headings text-navy hover:text-[#DAA520] transition-colors block w-full text-left py-3 px-2">
-                      {link.label}
-                    </button>
-                  ) : (
-                    <div>
-                      <button
-                        onClick={() => setMobileOpen(mobileOpen === idx ? null : idx)}
-                        className="flex items-center justify-between w-full text-base font-headings text-navy hover:text-[#DAA520] transition-colors py-3 px-2">
-                        {link.label}
-                        <ChevronDown size={14} className={`transition-transform duration-300 ${mobileOpen === idx ? 'rotate-180' : ''}`} />
-                      </button>
-                      <AnimatePresence>
-                        {mobileOpen === idx && (
-                          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-                            className="overflow-hidden pl-4 pb-2">
-                            {link.items.map(sub => (
-                              <Link key={sub.name} to={sub.path} onClick={() => { setIsOpen(false); setMobileOpen(null); }}
-                                className="block text-[10px] font-automobile uppercase tracking-widest text-navy/60 hover:text-navy py-2">
-                                {sub.name}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  )}
-                </div>
-              ))}
-              <Link to="/contact" onClick={() => setIsOpen(false)}
-                className="mt-4 bg-[#DAA520] hover:bg-[#B8860B] text-white font-bold text-center text-[10px] uppercase tracking-[0.2em] py-4 block">
-                Speak To Our Team
-              </Link>
-              <div className="mt-6 text-center space-y-1 text-[10px] text-navy/50 font-automobile uppercase tracking-widest">
-                <div><a href="tel:02085741700" className="hover:text-navy">020 8574 1700</a></div>
-                <div><a href="mailto:info@faithandco.co.uk" className="hover:text-navy">info@faithandco.co.uk</a></div>
+            {/* ABOUT dropdown */}
+            <div className={`nl${openMenu === 'about' ? ' open' : ''}`}>
+              <button className="nl-btn" onClick={() => toggle('about')}>
+                About <ChevronDown />
+              </button>
+              <div className="sdrop">
+                <Link to="/about-us/why-choose-us" className="sdrop-item" onClick={() => go('/about-us/why-choose-us')}>Why Choose Faith &amp; Co</Link>
+                <Link to="/about-us/our-story" className="sdrop-item" onClick={() => go('/about-us/our-story')}>Our Story</Link>
+                <Link to="/about-us/areas-we-cover" className="sdrop-item" onClick={() => go('/about-us/areas-we-cover')}>Areas We Cover</Link>
+                <div className="sdrop-divider"></div>
+                <Link to="/about-us/resources-and-guides" className="sdrop-item" onClick={() => go('/about-us/resources-and-guides')}>Guides &amp; Resources</Link>
               </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+
+            {/* WHAT WE DO — mega menu */}
+            <div className={`nl${openMenu === 'wwd' ? ' open' : ''}`}>
+              <button className="nl-btn" onClick={() => toggle('wwd')}>
+                What We Do <ChevronDown />
+              </button>
+              <div className="mega">
+                <div className="mega-wrap">
+
+                  <div className="m-left">
+                    <div className="m-col-head">Residential Lettings <em>&amp;</em> Management</div>
+                    <div className="m-col-rule"></div>
+
+                    <div className="m-section">Service Tiers</div>
+                    <Link to="/services/residential-letting" className="m-item" onClick={() => go('/services/residential-letting')}><span className="m-num">01</span><span className="m-label">Let Only</span></Link>
+                    <Link to="/services/property-management" className="m-item" onClick={() => go('/services/property-management')}><span className="m-num">02</span><span className="m-label">Rent Collection</span></Link>
+                    <Link to="/services/property-management" className="m-item" onClick={() => go('/services/property-management')}><span className="m-num">03</span><span className="m-label">Fully Managed</span></Link>
+                    <Link to="/guaranteed-rent" className="m-item" onClick={() => go('/guaranteed-rent')}><span className="m-num">04</span><span className="m-label">Guaranteed Rent</span></Link>
+
+                    <div className="m-divider"></div>
+                    <div className="m-section">Bespoke Landlord Services</div>
+                    <Link to="/services/hmo-management" className="m-item" onClick={() => go('/services/hmo-management')}><span className="m-num">05</span><span className="m-label">HMO Letting &amp; Management</span></Link>
+                    <Link to="/services/portfolio-management" className="m-item" onClick={() => go('/services/portfolio-management')}><span className="m-num">06</span><span className="m-label">Compliance &amp; Licensing</span></Link>
+                    <Link to="/services/portfolio-management" className="m-item" onClick={() => go('/services/portfolio-management')}><span className="m-num">07</span><span className="m-label">Portfolio Management</span></Link>
+                  </div>
+
+                  <div className="m-right">
+                    <div className="m-col-head">Specialist Letting <em>Services</em></div>
+                    <div className="m-col-rule"></div>
+                    <div className="m-right-inner">
+
+                      <div className="spec-col">
+                        <div className="s-head">Care &amp; Social Sector</div>
+                        <div className="s-rule"></div>
+                        <div className="s-section">Children's Services</div>
+                        <Link to="/services/care-sector-lettings" className="s-item" onClick={() => go('/services/care-sector-lettings')}><span className="s-dash"></span><span className="s-label">Children's Home Properties <span className="s-badge b-c2">C2</span></span></Link>
+                        <Link to="/services/supported-living" className="s-item" onClick={() => go('/services/supported-living')}><span className="s-dash"></span><span className="s-label">Supported Accommodation 16–17 <span className="s-badge b-hmo">HMO</span></span></Link>
+                        <Link to="/services/care-sector-lettings" className="s-item" onClick={() => go('/services/care-sector-lettings')}><span className="s-dash"></span><span className="s-label">Semi-Independent / Step-Down <span className="s-badge b-c3">C3</span></span></Link>
+                        <div className="s-divider"></div>
+                        <div className="s-section">Adult Social Care</div>
+                        <Link to="/services/supported-living" className="s-item" onClick={() => go('/services/supported-living')}><span className="s-dash"></span><span className="s-label">Supported Living <span className="s-badge b-c3">C3</span></span></Link>
+                        <Link to="/services/care-sector-lettings" className="s-item" onClick={() => go('/services/care-sector-lettings')}><span className="s-dash"></span><span className="s-label">Adult Residential Care Homes <span className="s-badge b-c2">C2</span></span></Link>
+                        <Link to="/services/care-sector-lettings" className="s-item" onClick={() => go('/services/care-sector-lettings')}><span className="s-dash"></span><span className="s-label">Mental Health Step-Down <span className="s-badge b-c2">C2</span></span></Link>
+                        <Link to="/services/care-sector-lettings" className="s-item" onClick={() => go('/services/care-sector-lettings')}><span className="s-dash"></span><span className="s-label">Learning Disability &amp; Autism <span className="s-badge b-c2">C2</span></span></Link>
+                        <Link to="/services/care-sector-lettings" className="s-item" onClick={() => go('/services/care-sector-lettings')}><span className="s-dash"></span><span className="s-label">Complex Needs &amp; Intensive Support <span className="s-badge b-sg">SG</span></span></Link>
+                      </div>
+
+                      <div className="spec-col">
+                        <div className="s-head">Councils, Operators &amp; Investors</div>
+                        <div className="s-rule"></div>
+                        <div className="s-section">Councils &amp; Operators</div>
+                        <Link to="/services/council-accommodation" className="s-item" onClick={() => go('/services/council-accommodation')}><span className="s-dash"></span><span className="s-label">Council &amp; Temporary Accommodation</span></Link>
+                        <Link to="/services/hmo-management" className="s-item" onClick={() => go('/services/hmo-management')}><span className="s-dash"></span><span className="s-label">Exempt Accommodation <span className="s-badge b-hmo">HMO</span></span></Link>
+                        <Link to="/services/council-accommodation" className="s-item" onClick={() => go('/services/council-accommodation')}><span className="s-dash"></span><span className="s-label">Emergency Placement Properties</span></Link>
+                        <Link to="/services/council-accommodation" className="s-item" onClick={() => go('/services/council-accommodation')}><span className="s-dash"></span><span className="s-label">Move-On &amp; Resettlement Housing</span></Link>
+                        <div className="s-divider"></div>
+                        <div className="s-section">Operator &amp; Block Letting</div>
+                        <Link to="/services/serviced-accommodation" className="s-item" onClick={() => go('/services/serviced-accommodation')}><span className="s-dash"></span><span className="s-label">SA Operator Letting</span></Link>
+                        <Link to="/services/serviced-accommodation" className="s-item" onClick={() => go('/services/serviced-accommodation')}><span className="s-dash"></span><span className="s-label">Whole Block Let</span></Link>
+                        <Link to="/services/company-corporate-lets" className="s-item" onClick={() => go('/services/company-corporate-lets')}><span className="s-dash"></span><span className="s-label">Corporate &amp; Company Lets</span></Link>
+                        <Link to="/services/serviced-accommodation/contractor" className="s-item" onClick={() => go('/services/serviced-accommodation/contractor')}><span className="s-dash"></span><span className="s-label">Contractor Accommodation</span></Link>
+                        <div className="s-divider"></div>
+                        <div className="s-section">Investors</div>
+                        <Link to="/services/portfolio-management" className="s-item" onClick={() => go('/services/portfolio-management')}><span className="s-dash"></span><span className="s-label">Investor Services</span></Link>
+                        <Link to="/services/c2-licensed-properties" className="s-item" onClick={() => go('/services/c2-licensed-properties')}><span className="s-dash"></span><span className="s-label">C2 Licensed Properties <span className="s-badge b-c2">C2</span></span></Link>
+                      </div>
+
+                    </div>
+                    <div className="m-footer">
+                      <span className="m-note">Faith &amp; Co supplies and lets properties — we do not provide care services.</span>
+                      <div className="m-footer-links">
+                        <Link to="/services" className="m-footer-link" onClick={() => go('/services')}>All Services</Link>
+                        <Link to="/contact" className="m-footer-link" onClick={() => go('/contact')}>Speak to the Team →</Link>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            {/* LANDLORDS dropdown */}
+            <div className={`nl${openMenu === 'land' ? ' open' : ''}`}>
+              <button className="nl-btn" onClick={() => toggle('land')}>
+                Landlords <ChevronDown />
+              </button>
+              <div className="sdrop">
+                <Link to="/landlords/let-with-us" className="sdrop-item" onClick={() => go('/landlords/let-with-us')}>Let With Faith &amp; Co</Link>
+                <Link to="/landlords/free-valuation" className="sdrop-item" onClick={() => go('/landlords/free-valuation')}>Free Rental Valuation</Link>
+                <Link to="/landlords/register" className="sdrop-item" onClick={() => go('/landlords/register')}>Register as a Landlord</Link>
+                <div className="sdrop-divider"></div>
+                <Link to="/landlords/guide-to-letting" className="sdrop-item" onClick={() => go('/landlords/guide-to-letting')}>Guide to Letting</Link>
+                <Link to="/landlords/hmo-licensing-guide" className="sdrop-item" onClick={() => go('/landlords/hmo-licensing-guide')}>HMO Licensing Guide</Link>
+                <Link to="/landlords/maintenance-guide" className="sdrop-item" onClick={() => go('/landlords/maintenance-guide')}>Maintenance &amp; Repairs</Link>
+                <div className="sdrop-divider"></div>
+                <Link to="/faq" className="sdrop-item" onClick={() => go('/faq')}>Landlord FAQ</Link>
+              </div>
+            </div>
+
+            {/* PROPERTIES dropdown */}
+            <div className={`nl${openMenu === 'prop' ? ' open' : ''}`}>
+              <button className="nl-btn" onClick={() => toggle('prop')}>
+                Properties <ChevronDown />
+              </button>
+              <div className="sdrop">
+                <Link to="/properties" className="sdrop-item" onClick={() => go('/properties')}>Available Properties</Link>
+                <Link to="/services/c2-licensed-properties" className="sdrop-item" onClick={() => go('/services/c2-licensed-properties')}>C2 Properties Available Now</Link>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="nav-right-fc">
+            <Link to="/contact" className="fc-nav-link" onClick={() => go('/contact')}>Contact</Link>
+            <Link to="/landlords/free-valuation" className="nav-cta" onClick={() => go('/landlords/free-valuation')}>Free Valuation</Link>
+            <button
+              className={`burger${drawerOpen ? ' open' : ''}`}
+              onClick={toggleDrawer}
+              aria-label="Menu"
+            >
+              <span></span><span></span><span></span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* MOBILE DRAWER */}
+      <div className={`drawer${drawerOpen ? ' open' : ''}`}>
+        <div className="drawer-head">
+          <span className="drawer-logo">Faith <em>&amp;</em> Co</span>
+          <button className="drawer-close" onClick={closeDrawer} aria-label="Close">&times;</button>
+        </div>
+        <div className="drawer-body">
+
+          {/* About */}
+          <div className={`dgroup${mobileOpen === 0 ? ' open' : ''}`}>
+            <button className="dgroup-head" onClick={() => dToggle(0)}>
+              About<ChevronDown />
+            </button>
+            <div className="dsub">
+              <Link to="/about-us/why-choose-us" onClick={() => go('/about-us/why-choose-us')}>Why Choose Faith &amp; Co</Link>
+              <Link to="/about-us/our-story" onClick={() => go('/about-us/our-story')}>Our Story</Link>
+              <Link to="/about-us/areas-we-cover" onClick={() => go('/about-us/areas-we-cover')}>Areas We Cover</Link>
+              <Link to="/about-us/resources-and-guides" onClick={() => go('/about-us/resources-and-guides')}>Guides &amp; Resources</Link>
+            </div>
+          </div>
+
+          {/* What We Do */}
+          <div className={`dgroup${mobileOpen === 1 ? ' open' : ''}`}>
+            <button className="dgroup-head" onClick={() => dToggle(1)}>
+              What We Do<ChevronDown />
+            </button>
+            <div className="dsub">
+              <div className="dsub-label">Residential Lettings &amp; Management</div>
+              <Link to="/services/residential-letting" onClick={() => go('/services/residential-letting')}>Let Only</Link>
+              <Link to="/services/property-management" onClick={() => go('/services/property-management')}>Rent Collection</Link>
+              <Link to="/services/property-management" onClick={() => go('/services/property-management')}>Fully Managed</Link>
+              <Link to="/guaranteed-rent" onClick={() => go('/guaranteed-rent')}>Guaranteed Rent</Link>
+              <Link to="/services/hmo-management" onClick={() => go('/services/hmo-management')}>HMO Letting &amp; Management</Link>
+              <Link to="/services/portfolio-management" onClick={() => go('/services/portfolio-management')}>Portfolio Management</Link>
+              <div className="dsub-label">Specialist Letting Services</div>
+              <Link to="/services/care-sector-lettings" onClick={() => go('/services/care-sector-lettings')}>Children's Home Properties</Link>
+              <Link to="/services/supported-living" onClick={() => go('/services/supported-living')}>Supported Accommodation 16–17</Link>
+              <Link to="/services/supported-living" onClick={() => go('/services/supported-living')}>Supported Living</Link>
+              <Link to="/services/care-sector-lettings" onClick={() => go('/services/care-sector-lettings')}>Adult Residential Care Homes</Link>
+              <Link to="/services/company-corporate-lets" onClick={() => go('/services/company-corporate-lets')}>Corporate &amp; Company Lets</Link>
+              <Link to="/services/portfolio-management" onClick={() => go('/services/portfolio-management')}>Investor Services</Link>
+              <Link to="/services" onClick={() => go('/services')}>View All Services →</Link>
+            </div>
+          </div>
+
+          {/* Landlords */}
+          <div className={`dgroup${mobileOpen === 2 ? ' open' : ''}`}>
+            <button className="dgroup-head" onClick={() => dToggle(2)}>
+              Landlords<ChevronDown />
+            </button>
+            <div className="dsub">
+              <Link to="/landlords/let-with-us" onClick={() => go('/landlords/let-with-us')}>Let With Faith &amp; Co</Link>
+              <Link to="/landlords/free-valuation" onClick={() => go('/landlords/free-valuation')}>Free Rental Valuation</Link>
+              <Link to="/landlords/register" onClick={() => go('/landlords/register')}>Register as a Landlord</Link>
+              <Link to="/landlords/guide-to-letting" onClick={() => go('/landlords/guide-to-letting')}>Guide to Letting</Link>
+              <Link to="/landlords/hmo-licensing-guide" onClick={() => go('/landlords/hmo-licensing-guide')}>HMO Licensing Guide</Link>
+              <Link to="/faq" onClick={() => go('/faq')}>Landlord FAQ</Link>
+            </div>
+          </div>
+
+          {/* Properties */}
+          <div className={`dgroup${mobileOpen === 3 ? ' open' : ''}`}>
+            <button className="dgroup-head" onClick={() => dToggle(3)}>
+              Properties<ChevronDown />
+            </button>
+            <div className="dsub">
+              <Link to="/properties" onClick={() => go('/properties')}>Available Properties</Link>
+              <Link to="/services/c2-licensed-properties" onClick={() => go('/services/c2-licensed-properties')}>C2 Properties Available Now</Link>
+            </div>
+          </div>
+
+          {/* Contact - solo */}
+          <div className="dgroup">
+            <Link to="/contact" className="dgroup-head solo" style={{ display: 'block' }} onClick={() => go('/contact')}>Contact</Link>
+          </div>
+
+          <Link to="/landlords/free-valuation" className="drawer-cta" onClick={() => go('/landlords/free-valuation')}>Book a Free Valuation</Link>
+          <div className="drawer-contact">
+            <a href="tel:02085741700">020 8574 1700</a><br />
+            <a href="mailto:info@faithandco.co.uk">info@faithandco.co.uk</a>
+          </div>
+        </div>
+      </div>
+
+      {/* OVERLAY */}
+      <div
+        className={`fc-overlay${(openMenu || drawerOpen) ? ' show' : ''}`}
+        onClick={() => { closeAll(); closeDrawer(); }}
+      />
+    </>
   );
 };
 
